@@ -259,4 +259,4 @@ Some methods return void* instead of ref T (.NET 3.5 limitation).
 
 ## 许可证 / License
 
-MIT License
+Apache-2.0 license 

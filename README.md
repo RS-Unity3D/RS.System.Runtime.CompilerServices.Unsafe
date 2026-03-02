@@ -12,7 +12,7 @@ This is a .NET 2.0/.NET3.5/.NET4.0 compatible implementation of `System.Runtime.
 ## 与 net40 以上目标上的 System.Runtime.CompilerServices.Unsafe 的互操作
 
 由于 `net20/net35/net40` 运行时已经多年未获支持，您很可能在较新的运行时上使用此库。但您可能与目标为 System.Runtime.CompilerServices.Unsafe 的其他组件进行互操作，这默认情况下会导致类型冲突。
-在这种情况下，建议从编译中移除 System.Runtime.CompilerServices.Unsafe，并在其位置添加 RS.System.Runtime.CompilerServices.Unsafe.dll对于的.net版本。
+在这种情况下，建议从编译中移除 System.Runtime.CompilerServices.Unsafe，并在其位置添加 RS.System.Runtime.CompilerServices.Unsafe.dll对应的.net版本。
 ## Features / 特性
 
 - **.NET 2.0/.NET 3.5/.NET 4.0 compatible** / 兼容 .NET 2.0/ .NET 3.5 /.NET 4.0
@@ -283,7 +283,7 @@ Your project must allow unsafe code:
 
 ## Requirements / 要求
 
-- .NET Framework 2.0 SDK
+- .NET Framework 2.0(3.5) SDK/ .NET Framework 4.0 SDK
 - IL Assembler (ilasm.exe)
 - MSBuild 4.0 or higher
 - C# compiler with unsafe code support
@@ -343,7 +343,7 @@ Check that:
 
 ## License / 许可证
 
-MIT License
+Apache-2.0 license 
 
 ## Notes / 说明
 
