@@ -143,6 +143,7 @@ msbuild RS.System.Runtime.CompilerServices.Unsafe.Net40.ilproj /p:Configuration=
 msbuild RS.System.Runtime.CompilerServices.Unsafe.Net20.ilproj /p:Configuration=Release
 msbuild RS.System.Runtime.CompilerServices.Unsafe.Net35.ilproj /p:Configuration=Release
 msbuild RS.System.Runtime.CompilerServices.Unsafe.Net40.ilproj /p:Configuration=Release
+
 ```
 
 ### Using Visual Studio / 使用 Visual Studio
@@ -161,6 +162,22 @@ ilasm.exe /QUIET /DLL /DEBUG /OUTPUT=bin\Debug\RS.System.Runtime.CompilerService
 ilasm.exe /QUIET /DLL /OUTPUT=bin\Release\RS.System.Runtime.CompilerServices.Unsafe.dll System.Runtime.CompilerServices.Unsafe.il
 ```
 
+###使用构建脚本 / Using Build Script
+
+```
+项目提供了构建脚本 build.bat，可以快速编译 Debug 和 Release 版本：
+# 编译所有版本 / Build all versions (default)
+build.bat
+
+# 仅编译 Debug 版本 / Build Debug version only
+build.bat debug
+
+# 仅编译 Release 版本 / Build Release version only
+build.bat release
+
+# 清理编译文件 / Clean compiled files
+build.bat clean
+```
 ## Usage Examples / 使用示例
 
 ### Basic Pointer Operations / 基础指针操作

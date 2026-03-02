@@ -23,7 +23,7 @@ This project provides a complete implementation of the `System.Runtime.CompilerS
 The project provides a build script `build.bat` for quick compilation of Debug and Release versions:
 
 ```bash
-cd RS.System.Runtime.CompilerServices.Unsafe.Net20
+cd RS.System.Runtime.CompilerServices.Unsafe.Net35
 
 # 编译所有版本 / Build all versions (default)
 build.bat
@@ -254,8 +254,8 @@ Some methods return void* instead of ref T (.NET 3.5 limitation).
 |-----------|-------------------|
 | `System.Runtime.CompilerServices.Unsafe.il` | Unsafe 类的 IL 源代码 / IL source code |
 | `RS.System.Runtime.CompilerServices.Unsafe.dll` | 编译后的程序集 / Compiled assembly |
-| `DirectUnsafeTest.cs` | 测试程序 / Test program |
-| `UnsafeExample.cs` | 使用示例 / Usage examples |
+| `FullTest.cs` | 测试程序 / Test program |
+
 
 ## 许可证 / License
 

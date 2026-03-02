@@ -212,20 +212,20 @@ void* nullRef = Unsafe.NullRef<int>();
 
 ```bash
 # 编译测试程序 / Compile test program
-csc.exe /unsafe+ /reference:RS.System.Runtime.CompilerServices.Unsafe.dll /out:DirectUnsafeTest.exe DirectUnsafeTest.cs
+csc.exe /unsafe+ /reference:RS.System.Runtime.CompilerServices.Unsafe.dll /out:FullTest.exe FullTest.cs
 
 # 运行测试 / Run tests
-DirectUnsafeTest.exe
+FullTest.exe
 ```
 
 ### 使用示例 / Usage Example
 
 ```bash
 # 编译示例程序 / Compile example program
-csc.exe /unsafe+ /reference:RS.System.Runtime.CompilerServices.Unsafe.dll /out:UnsafeExample.exe UnsafeExample.cs
+csc.exe /unsafe+ /reference:RS.System.Runtime.CompilerServices.Unsafe.dll /out:FullTest.exe FullTest.cs
 
 # 运行示例 / Run examples
-UnsafeExample.exe
+FullTest.exe
 ```
 
 ## 性能说明 / Performance Notes
@@ -254,8 +254,8 @@ Some methods return void* instead of ref T (.NET 2.0 limitation).
 |-----------|-------------------|
 | `System.Runtime.CompilerServices.Unsafe.il` | Unsafe 类的 IL 源代码 / IL source code |
 | `RS.System.Runtime.CompilerServices.Unsafe.dll` | 编译后的程序集 / Compiled assembly |
-| `DirectUnsafeTest.cs` | 测试程序 / Test program |
-| `UnsafeExample.cs` | 使用示例 / Usage examples |
+| `FullTest.cs` | 测试程序 / Test program |
+
 
 ## 许可证 / License
 
