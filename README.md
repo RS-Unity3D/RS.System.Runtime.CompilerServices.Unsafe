@@ -162,7 +162,7 @@ ilasm.exe /QUIET /DLL /DEBUG /OUTPUT=bin\Debug\RS.System.Runtime.CompilerService
 ilasm.exe /QUIET /DLL /OUTPUT=bin\Release\RS.System.Runtime.CompilerServices.Unsafe.dll System.Runtime.CompilerServices.Unsafe.il
 ```
 
-###使用构建脚本 / Using Build Script
+### 使用构建脚本 / Using Build Script
 
 ```
 项目提供了构建脚本 build.bat，可以快速编译 Debug 和 Release 版本：
@@ -370,5 +370,5 @@ This implementation uses IL to provide the same API surface as `System.Runtime.C
 
 ## Related Projects / 相关项目
 
-- [RS.Memory.Unsafe](../RS.System.Runtime.CompilerServices.Unsafe/) - .NET 2.0+ csharp code implementation
-- [RS.PowerThreadPool](../PowerThreadPool/) - Thread pool library using this implementation
+- [RS.Memory.Unsafe](../RS.Memory.Unsafe/) - .NET 2.0+ csharp code implementation
+- [RS.PowerThreadPool](../RS.PowerThreadPool/) - Thread pool library using this implementation
