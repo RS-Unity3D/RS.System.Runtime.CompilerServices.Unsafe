@@ -1,4 +1,4 @@
-# RS.System.Runtime.CompilerServices.Unsafe for .NET 2.0
+# RS.System.Runtime.CompilerServices.Unsafe for .NET 2.0/.NET 3.5/.NET 4.0
 System.Runtime.CompilerServices.Unsafe Polyfill for .NET Framework 2.0/ .NET Framework 3.5/ .NET Framework 4.0
 ## Overview / 概述
 
