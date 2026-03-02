@@ -1,0 +1,72 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-A1B2-C3D4E5F67890}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Runtime.CompilerServices</RootNamespace>
+    <AssemblyName>RS.System.Runtime.CompilerServices.Unsafe</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+	<DocumentationFile>$(MSBuildThisFileDirectory)RS.System.Runtime.CompilerServices.Unsafe.xml</DocumentationFile>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>false</SignAssembly>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IlasmPath>$(FrameworkSDKDir)\bin\ilasm.exe</IlasmPath>
+    <IlasmPath Condition="'$(IlasmPath)' == ''">C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe</IlasmPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <IlasmSource Include="System.Runtime.CompilerServices.Unsafe.il" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="Examples.cs" />
+    <None Include="Program.cs" />
+  </ItemGroup>
+
+  <Target Name="CoreCompile" Inputs="@(IlasmSource)" Outputs="$(OutputPath)$(AssemblyName).dll">
+    <PropertyGroup>
+      <IlasmArgs>/QUIET /DLL /OUTPUT=$(OutputPath)$(AssemblyName).dll</IlasmArgs>
+      <IlasmArgs Condition="'$(Configuration)' == 'Debug'">$(IlasmArgs) /DEBUG</IlasmArgs>
+    </PropertyGroup>
+    <Message Text="Assembling $(AssemblyName) from IL..." Importance="high" />
+    <Exec Command="&quot;$(IlasmPath)&quot; $(IlasmArgs) &quot;%(IlasmSource.FullPath)&quot;" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" Condition="Exists('$(OutputPath)$(AssemblyName).pdb')" DestinationFolder="$(OutputPath)" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="CoreCompile" />
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(OutputPath)" />
+    <RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+  </Target>
+
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+</Project>

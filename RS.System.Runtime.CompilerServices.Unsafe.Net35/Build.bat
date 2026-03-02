@@ -1,0 +1,79 @@
+@echo off
+setlocal enabledelayedexpansion
+
+set ILASM=
+set IL_FILE=System.Runtime.CompilerServices.Unsafe.il
+set DLL_NAME=RS.System.Runtime.CompilerServices.Unsafe.dll
+
+echo Building RS.System.Runtime.CompilerServices.Unsafe for .NET 3.5
+echo.
+
+rem Use .NET 2.0 ILASM for .NET 3.5 compatibility
+if exist "C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe" (
+  set ILASM="C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe"
+  goto found_ilasm
+)
+
+if exist "C:\Windows\Microsoft.NET\Framework64\v2.0.50727\ilasm.exe" (
+  set ILASM="C:\Windows\Microsoft.NET\Framework64\v2.0.50727\ilasm.exe"
+  goto found_ilasm
+)
+
+:found_ilasm
+if not defined ILASM (
+  echo ERROR: Cannot find ilasm.exe
+  exit /b 1
+)
+
+echo Using ILASM: %ILASM%
+echo.
+
+if "%1"=="" goto build_all
+if "%1"=="debug" goto build_debug
+if "%1"=="release" goto build_release
+if "%1"=="all" goto build_all
+goto usage
+
+:usage
+echo Usage: Build.bat [debug|release|all]
+exit /b 0
+
+:build_all
+call :build_debug
+if errorlevel 1 goto error
+call :build_release
+if errorlevel 1 goto error
+goto success
+
+:build_debug
+echo Building Debug version...
+if exist "%DLL_NAME%" del /F /Q "%DLL_NAME%" 2>nul
+%ILASM% /dll /debug /out:"%DLL_NAME%" "%IL_FILE%"
+if errorlevel 1 goto error
+if not exist "bin\Debug" mkdir "bin\Debug"
+copy /Y "%DLL_NAME%" "bin\Debug\%DLL_NAME%" >nul
+echo Debug build completed: bin\Debug\%DLL_NAME%
+goto end
+
+:build_release
+echo Building Release version...
+if exist "%DLL_NAME%" del /F /Q "%DLL_NAME%" 2>nul
+%ILASM% /dll /optimize /out:"%DLL_NAME%" "%IL_FILE%"
+if errorlevel 1 goto error
+if not exist "bin\Release" mkdir "bin\Release"
+copy /Y "%DLL_NAME%" "bin\Release\%DLL_NAME%" >nul
+echo Release build completed: bin\Release\%DLL_NAME%
+goto end
+
+:error
+echo.
+echo ERROR: Build failed!
+exit /b 1
+
+:success
+echo.
+echo SUCCESS: All builds completed!
+goto end
+
+:end
+endlocal
