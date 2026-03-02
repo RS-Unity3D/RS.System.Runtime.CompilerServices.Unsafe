@@ -4,7 +4,7 @@ System.Runtime.CompilerServices.Unsafe Polyfill for .NET Framework 2.0/ .NET Fra
 
 This is a .NET 2.0/.NET3.5/.NET4.0 compatible implementation of `System.Runtime.CompilerServices.Unsafe` class using IL (Intermediate Language). It provides generic, low-level functionality for manipulating pointers and memory.
 
-这是使用 IL（中间语言）实现的 `System.Runtime.CompilerServices.Unsafe` 类的 .NET 2.0 兼容实现。它提供了用于操作指针和内存的通用低级功能。
+这是使用 IL（中间语言）实现的 `System.Runtime.CompilerServices.Unsafe` 类的 .NET 2.0/.net3.5/.net4.0 兼容实现。它提供了用于操作指针和内存的通用低级功能。
 提供 System.Runtime.CompilerServices.Unsafe 类，该类提供了用于操作指针的泛型低级功能,所有测试均已通过。
 
 常用类型：
