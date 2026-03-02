@@ -1,347 +1,262 @@
-# RS.System.Runtime.CompilerServices.Unsafe for .NET 2.0
+# Unsafe .NET 2.0 实现 / Unsafe .NET 2.0 Implementation
 
-## Overview / 概述
+## 概述 / Overview
 
-This is a .NET 2.0 compatible implementation of `System.Runtime.CompilerServices.Unsafe` class using IL (Intermediate Language). It provides generic, low-level functionality for manipulating pointers and memory.
+本项目为 .NET Framework 2.0 提供了 `System.Runtime.CompilerServices.Unsafe` 类的完整实现，包含 34 个静态方法，支持高性能的内存操作和指针运算。
 
-这是使用 IL（中间语言）实现的 `System.Runtime.CompilerServices.Unsafe` 类的 .NET 2.0 兼容实现。它提供了用于操作指针和内存的通用低级功能。
+This project provides a complete implementation of the `System.Runtime.CompilerServices.Unsafe` class for .NET Framework 2.0, including 34 static methods supporting high-performance memory operations and pointer arithmetic.
 
-## Features / 特性
+## 特性 / Features
 
-- **.NET 2.0 compatible** / 兼容 .NET 2.0
-- **IL-based implementation** / 基于 IL 的实现
-- **Pointer manipulation** / 指针操作
-- **Memory operations** / 内存操作
-- **Type casting** / 类型转换
-- **Same API as .NET 4.0+** / 与 .NET 4.0+ 相同的 API
+- ✅ 完全兼容 .NET Framework 2.0
+- ✅ 支持所有核心 Unsafe 方法
+- ✅ 无反射包装，直接使用
+- ✅ 高性能 IL 实现
+- ✅ 支持 ref 和 void* 参数
 
-## Implementation Details / 实现细节
+## 编译和安装 / Build and Install
 
-### Why IL? / 为什么使用 IL？
+### 使用构建脚本 / Using Build Script
 
-1. **Generic method support** / 泛型方法支持
-   - IL supports generic methods with pointers / IL 支持带指针的泛型方法
-   - C# doesn't allow pointer generics in .NET 2.0 / C# 在 .NET 2.0 中不允许指针泛型
+项目提供了构建脚本 `build.bat`，可以快速编译 Debug 和 Release 版本：
 
-2. **Direct IL instructions** / 直接 IL 指令
-   - Uses `cpblk` and `initblk` for block operations / 使用 `cpblk` 和 `initblk` 进行块操作
-   - More efficient than C# loops / 比 C# 循环更高效
-
-3. **Aggressive inlining** / 激进内联
-   - All methods marked with `aggressiveinlining` / 所有方法标记为 `aggressiveinlining`
-   - Zero runtime overhead / 零运行时开销
-
-## Supported Methods / 支持的方法
-
-### Read Operations / 读取操作
-
-| Method | Description |
-|---------|-------------|
-| `Read<T>(void* source)` | Read value from pointer / 从指针读取值 |
-| `ReadUnaligned<T>(void* source)` | Read value without alignment assumption / 在不假定对齐的情况下读取值 |
-
-### Write Operations / 写入操作
-
-| Method | Description |
-|---------|-------------|
-| `Write<T>(void* destination, T value)` | Write value to pointer / 将值写入指针 |
-| `WriteUnaligned<T>(void* destination, T value)` | Write value without alignment assumption / 在不假定对齐的情况下写入值 |
-
-### Copy Operations / 复制操作
-
-| Method | Description |
-|---------|-------------|
-| `Copy<T>(void* destination, ref T source)` | Copy value to pointer / 将值复制到指针 |
-| `Copy<T>(ref T destination, void* source)` | Copy value from pointer / 从指针复制值 |
-
-### Pointer Operations / 指针操作
-
-| Method | Description |
-|---------|-------------|
-| `AsPointer<T>(ref T value)` | Get pointer to reference / 获取指向引用的指针 |
-| `AsRef<T>(void* source)` | Get reference from pointer / 从指针获取引用 |
-| `AsRef<T>(ref T source)` | Get reference from reference / 从引用获取引用 |
-| `As<TFrom, TTo>(ref TFrom source)` | Reinterpret reference as different type / 将引用重新解释为不同类型 |
-| `As<T>(object o)` | Reinterpret object as different type / 将对象重新解释为不同类型 |
-| `Unbox<T>(object box)` | Get reference to boxed value / 获取对装箱值的引用 |
-
-### Arithmetic Operations / 算术操作
-
-| Method | Description |
-|---------|-------------|
-| `Add<T>(ref T source, int elementOffset)` | Add element offset to reference / 将元素偏移量添加到引用 |
-| `Add<T>(T* source, int elementOffset)` | Add element offset to pointer / 将元素偏移量添加到指针 |
-| `Add<T>(ref T source, IntPtr elementOffset)` | Add element offset using IntPtr / 使用 IntPtr 添加元素偏移量 |
-| `AddByteOffset<T>(ref T source, IntPtr byteOffset)` | Add byte offset to reference / 将字节偏移量添加到引用 |
-| `Subtract<T>(ref T source, int elementOffset)` | Subtract element offset from reference / 从引用减去元素偏移量 |
-| `Subtract<T>(T* source, int elementOffset)` | Subtract element offset from pointer / 从指针减去元素偏移量 |
-| `Subtract<T>(ref T source, IntPtr elementOffset)` | Subtract element offset using IntPtr / 使用 IntPtr 减去元素偏移量 |
-| `SubtractByteOffset<T>(ref T source, IntPtr byteOffset)` | Subtract byte offset from reference / 从引用减去字节偏移量 |
-
-### Offset Operations / 偏移操作
-
-| Method | Description |
-|---------|-------------|
-| `ByteOffset<T>(ref T origin, ref T target)` | Calculate byte offset between references / 计算引用之间的字节偏移量 |
-| `AreSame<T>(ref T left, ref T right)` | Check if references point to same location / 检查引用是否指向相同位置 |
-
-### Size Operations / 大小操作
-
-| Method | Description |
-|---------|-------------|
-| `SizeOf<T>()` | Get size of type / 获取类型大小 |
-
-### Initialization Operations / 初始化操作
-
-| Method | Description |
-|---------|-------------|
-| `SkipInit<T>(out T value)` | Skip definite assignment / 跳过明确赋值 |
-
-### Block Operations / 块操作
-
-| Method | Description |
-|---------|-------------|
-| `CopyBlock(void* destination, void* source, uint byteCount)` | Copy bytes using cpblk / 使用 cpblk 复制字节 |
-| `CopyBlock(ref byte destination, ref byte source, uint byteCount)` | Copy bytes using cpblk / 使用 cpblk 复制字节 |
-| `CopyBlockUnaligned(void* destination, void* source, uint byteCount)` | Copy bytes unaligned / 不对齐复制字节 |
-| `CopyBlockUnaligned(ref byte destination, ref byte source, uint byteCount)` | Copy bytes unaligned / 不对齐复制字节 |
-| `InitBlock(void* startAddress, byte value, uint byteCount)` | Initialize bytes using initblk / 使用 initblk 初始化字节 |
-| `InitBlock(ref byte startAddress, byte value, uint byteCount)` | Initialize bytes using initblk / 使用 initblk 初始化字节 |
-| `InitBlockUnaligned(void* startAddress, byte value, uint byteCount)` | Initialize bytes unaligned / 不对齐初始化字节 |
-| `InitBlockUnaligned(ref byte startAddress, byte value, uint byteCount)` | Initialize bytes unaligned / 不对齐初始化字节 |
-
-### Null Reference Operations / 空引用操作
-
-| Method | Description |
-|---------|-------------|
-| `IsNullRef<T>(ref T source)` | Check if reference is null / 检查引用是否为空 |
-| `NullRef<T>()` | Get null reference / 获取空引用 |
-
-## Building / 构建
-
-### Prerequisites / 前提条件
-
-- .NET Framework 2.0 SDK
-- IL Assembler (ilasm.exe) - included with .NET Framework SDK
-- MSBuild
-
-### Using MSBuild / 使用 MSBuild
+The project provides a build script `build.bat` for quick compilation of Debug and Release versions:
 
 ```bash
-# Debug build / Debug 构建
-msbuild RS.System.Runtime.CompilerServices.Unsafe.Net20.ilproj /p:Configuration=Debug
+cd RS.System.Runtime.CompilerServices.Unsafe.Net20
 
-# Release build / Release 构建
-msbuild RS.System.Runtime.CompilerServices.Unsafe.Net20.ilproj /p:Configuration=Release
+# 编译所有版本 / Build all versions (default)
+build.bat
+
+# 仅编译 Debug 版本 / Build Debug version only
+build.bat debug
+
+# 仅编译 Release 版本 / Build Release version only
+build.bat release
+
+# 清理编译文件 / Clean compiled files
+build.bat clean
 ```
 
-### Using Visual Studio / 使用 Visual Studio
-
-1. Open `RS.System.Runtime.CompilerServices.Unsafe.Net20.ilproj` in Visual Studio
-2. Select "Release" configuration
-3. Click "Build" > "Build Solution"
-
-### Manual IL Assembly / 手动 IL 汇编
+### 手动编译 IL 程序集 / Manual IL Assembly Compilation
 
 ```bash
-# Debug build / Debug 构建
-ilasm.exe /QUIET /DLL /DEBUG /OUTPUT=bin\Debug\RS.System.Runtime.CompilerServices.Unsafe.dll System.Runtime.CompilerServices.Unsafe.il
+cd RS.System.Runtime.CompilerServices.Unsafe.Net20
 
-# Release build / Release 构建
-ilasm.exe /QUIET /DLL /OUTPUT=bin\Release\RS.System.Runtime.CompilerServices.Unsafe.dll System.Runtime.CompilerServices.Unsafe.il
+# Debug 版本 / Debug version
+C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe /dll /debug /out:RS.System.Runtime.CompilerServices.Unsafe.dll System.Runtime.CompilerServices.Unsafe.il
+
+# Release 版本 / Release version
+C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe /dll /out:RS.System.Runtime.CompilerServices.Unsafe.dll System.Runtime.CompilerServices.Unsafe.il
 ```
 
-## Usage Examples / 使用示例
+### 在项目中使用 / Use in Your Project
 
-### Basic Pointer Operations / 基础指针操作
+将编译好的 `RS.System.Runtime.CompilerServices.Unsafe.dll` 复制到您的项目目录，然后在项目中引用：
+
+Copy the compiled `RS.System.Runtime.CompilerServices.Unsafe.dll` to your project directory and reference it:
+
+```bash
+csc.exe /reference:RS.System.Runtime.CompilerServices.Unsafe.dll YourProgram.cs
+```
+
+## API 文档 / API Documentation
+
+### 类型大小 / Type Size
 
 ```csharp
-using System.Runtime.CompilerServices;
+int size = Unsafe.SizeOf<int>();  // 返回类型大小 / Returns type size
+```
 
+### 内存读写 / Memory Read/Write
+
+```csharp
 unsafe
 {
     int value = 42;
     int* ptr = &value;
 
-    // Read value / 读取值
+    // 读取内存 / Read memory
     int readValue = Unsafe.Read<int>(ptr);
 
-    // Write value / 写入值
+    // 写入内存 / Write memory
     Unsafe.Write<int>(ptr, 100);
+
+    // 非对齐读取 / Unaligned read
+    int unaligned = Unsafe.ReadUnaligned<int>((byte*)ptr + 1);
+
+    // 非对齐写入 / Unaligned write
+    Unsafe.WriteUnaligned<int>((byte*)ptr + 1, 200);
 }
 ```
 
-### Type Reinterpretation / 类型重新解释
+### 内存块操作 / Memory Block Operations
 
 ```csharp
 unsafe
 {
-    double d = 3.14;
-    long l = Unsafe.As<double, long>(ref d);
-    Console.WriteLine($"Long representation: {l}");
+    byte* source = stackalloc byte[100];
+    byte* dest = stackalloc byte[100];
+
+    // 复制内存块 / Copy memory block
+    Unsafe.CopyBlock(dest, source, 100);
+
+    // 初始化内存块 / Initialize memory block
+    Unsafe.InitBlock(dest, 0xFF, 100);
+
+    // 非对齐操作 / Unaligned operations
+    Unsafe.CopyBlockUnaligned(dest, source, 100);
+    Unsafe.InitBlockUnaligned(dest, 0xFF, 100);
 }
 ```
 
-### Memory Block Operations / 内存块操作
+### 指针运算 / Pointer Arithmetic
 
 ```csharp
 unsafe
 {
-    byte[] source = new byte[100];
-    byte[] destination = new byte[100];
-
-    fixed (byte* srcPtr = source)
-    fixed (byte* destPtr = destination)
-    {
-        // Copy block using cpblk / 使用 cpblk 复制块
-        Unsafe.CopyBlock(destPtr, srcPtr, (uint)source.Length);
-
-        // Initialize block using initblk / 使用 initblk 初始化块
-        Unsafe.InitBlock(destPtr, 0xFF, (uint)destination.Length);
-    }
-}
-```
-
-### Pointer Arithmetic / 指针算术
-
-```csharp
-unsafe
-{
-    int[] array = new int[10];
+    int[] array = new int[] { 10, 20, 30, 40, 50 };
     fixed (int* ptr = array)
     {
-        // Add element offset / 添加元素偏移量
-        ref int element = ref Unsafe.Add<int>(ref array[0], 5);
-        element = 42;
+        // 按元素偏移 / Offset by elements
+        void* ptr2 = Unsafe.Add<int>(ptr, 2);           // ptr + 2 * sizeof(int)
+        void* ptr1 = Unsafe.Subtract<int>(ptr + 3, 2);  // ptr + 3 - 2 * sizeof(int)
 
-        // Calculate byte offset / 计算字节偏移量
-        IntPtr offset = Unsafe.ByteOffset<int>(ref array[0], ref element);
-        Console.WriteLine($"Byte offset: {offset}");
+        // 按字节偏移 / Offset by bytes
+        int first = array[0];
+        void* ptrByte = Unsafe.AddByteOffset<int>(ref first, (IntPtr)8);
+
+        // 字节偏移计算 / Calculate byte offset
+        int offset = Unsafe.ByteOffset<int>(ref array[0], ref array[2]);
     }
 }
 ```
 
-## Output / 输出
-
-After building, the following files are generated:
-
-构建后，将生成以下文件：
-
-```
-bin\Debug\
-  RS.System.Runtime.CompilerServices.Unsafe.dll
-  RS.System.Runtime.CompilerServices.Unsafe.pdb
-
-bin\Release\
-  RS.System.Runtime.CompilerServices.Unsafe.dll
-```
-
-## Using in Your Project / 在项目中使用
-
-### Reference the Assembly / 引用程序集
-
-#### In .csproj / 在 .csproj 文件中
-
-```xml
-<Reference Include="RS.System.Runtime.CompilerServices.Unsafe">
-  <HintPath>path\to\bin\Debug\RS.System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-</Reference>
-```
-
-#### In Visual Studio / 在 Visual Studio 中
-
-1. Right-click "References" in your project
-2. Select "Add Reference..."
-3. Browse to `RS.System.Runtime.CompilerServices.Unsafe.dll`
-4. Add the reference
-
-### Import Namespace / 导入命名空间
+### 类型转换 / Type Conversion
 
 ```csharp
-using System.Runtime.CompilerServices;
+unsafe
+{
+    // 获取指针 / Get pointer
+    int value = 42;
+    void* ptr = Unsafe.AsRef<int>(ref value);
+    void* ptrFromPtr = Unsafe.AsRef<int>((int*)&value);
+
+    // 类型转换 / Type cast
+    int intValue = 0x12345678;
+    void* intPtr = Unsafe.As<int, void>(ref intValue);
+
+    // 拆箱 / Unbox
+    object boxed = 42;
+    void* unboxed = Unsafe.Unbox<int>(boxed);
+}
 ```
 
-### Enable Unsafe Code / 启用不安全代码
+### 引用比较 / Reference Comparison
 
-Your project must allow unsafe code:
+```csharp
+int[] array = new int[] { 10, 20, 30 };
 
-```xml
-<PropertyGroup>
-  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-</PropertyGroup>
+// 检查是否为同一个引用 / Check if same reference
+bool same = Unsafe.AreSame<int>(ref array[0], ref array[0]);
+
+// 检查是否为空引用 / Check if null reference
+bool isNull = Unsafe.IsNullRef<int>(ref *(int*)0);
+
+// 获取空引用 / Get null reference
+void* nullRef = Unsafe.NullRef<int>();
 ```
 
-## Requirements / 要求
+## 完整 API 列表 / Complete API List
 
-- .NET Framework 2.0 SDK
-- IL Assembler (ilasm.exe)
-- MSBuild 4.0 or higher
-- C# compiler with unsafe code support
+| 方法 / Method | 描述 / Description |
+|-------------|-------------------|
+| `SizeOf<T>()` | 获取类型大小 / Get type size |
+| `Read<T>(void*)` | 从指针读取值 / Read value from pointer |
+| `ReadUnaligned<T>(void*)` | 非对齐读取 / Unaligned read |
+| `Write<T>(void*, T)` | 写入值到指针 / Write value to pointer |
+| `WriteUnaligned<T>(void*, T)` | 非对齐写入 / Unaligned write |
+| `Copy<T>(void*, T&)` | 复制值 / Copy value |
+| `Copy<T>(T&, void*)` | 复制值 / Copy value |
+| `CopyBlock(void*, void*, uint)` | 复制内存块 / Copy memory block |
+| `CopyBlock(byte&, byte&, uint)` | 复制内存块 / Copy memory block |
+| `CopyBlockUnaligned(void*, void*, uint)` | 非对齐复制 / Unaligned copy |
+| `CopyBlockUnaligned(byte&, byte&, uint)` | 非对齐复制 / Unaligned copy |
+| `InitBlock(void*, byte, uint)` | 初始化内存块 / Initialize memory block |
+| `InitBlock(byte&, byte, uint)` | 初始化内存块 / Initialize memory block |
+| `InitBlockUnaligned(void*, byte, uint)` | 非对齐初始化 / Unaligned init |
+| `InitBlockUnaligned(byte&, byte, uint)` | 非对齐初始化 / Unaligned init |
+| `As<T>(object)` | 类型转换 / Type cast |
+| `AsRef<T>(void*)` | 获取指针 / Get pointer |
+| `AsRef<T>(T&)` | 获取指针 / Get pointer |
+| `As<TFrom, TTo>(TFrom&)` | 类型转换 / Type cast |
+| `Unbox<T>(object)` | 拆箱 / Unbox |
+| `Add<T>(T&, int)` | 按元素偏移 / Offset by elements |
+| `Add<T>(void*, int)` | 按元素偏移 / Offset by elements |
+| `Add<T>(T&, IntPtr)` | 按元素偏移 / Offset by elements |
+| `AddByteOffset<T>(T&, IntPtr)` | 按字节偏移 / Offset by bytes |
+| `Subtract<T>(T&, int)` | 按元素偏移 / Offset by elements |
+| `Subtract<T>(void*, int)` | 按元素偏移 / Offset by elements |
+| `Subtract<T>(T&, IntPtr)` | 按元素偏移 / Offset by elements |
+| `SubtractByteOffset<T>(T&, IntPtr)` | 按字节偏移 / Offset by bytes |
+| `ByteOffset<T>(T&, T&)` | 计算字节偏移 / Calculate byte offset |
+| `AreSame<T>(T&, T&)` | 检查是否相同 / Check if same |
+| `IsNullRef<T>(T&)` | 检查是否为空 / Check if null |
+| `NullRef<T>()` | 获取空引用 / Get null reference |
+| `AsPointer<T>(T&)` | 获取指针 / Get pointer |
+| `SkipInit<T>(T&)` | 跳过初始化 / Skip initialization |
 
-## Compatibility / 兼容性
+## 示例程序 / Example Programs
 
-| .NET Version | Status |
-|--------------|--------|
-| .NET Framework 2.0 | ✅ Primary target |
-| .NET Framework 3.5 | ✅ Compatible |
-| .NET Framework 4.0+ | ✅ Compatible |
+### 测试程序 / Test Program
 
-## Differences from C# Implementation / 与 C# 实现的区别
+```bash
+# 编译测试程序 / Compile test program
+csc.exe /unsafe+ /reference:RS.System.Runtime.CompilerServices.Unsafe.dll /out:DirectUnsafeTest.exe DirectUnsafeTest.cs
 
-### Advantages of IL Implementation / IL 实现的优势
-
-1. **True generic methods** / 真正的泛型方法
-   - Supports `T*` as parameter type / 支持 `T*` 作为参数类型
-   - C# doesn't allow this in .NET 2.0 / C# 在 .NET 2.0 中不允许这样做
-
-2. **Direct IL instructions** / 直接 IL 指令
-   - Uses `cpblk` and `initblk` / 使用 `cpblk` 和 `initblk`
-   - More efficient than C# loops / 比 C# 循环更高效
-
-3. **Aggressive inlining** / 激进内联
-   - Zero overhead method calls / 零开销方法调用
-   - Better performance / 更好的性能
-
-## Limitations / 限制
-
-1. **Unsafe code required** / 需要不安全代码
-   - All methods must be called from unsafe contexts / 所有方法必须在 unsafe 上下文中调用
-
-2. **IL knowledge needed for modifications** / 修改需要 IL 知识
-   - Understanding IL is helpful for understanding the code / 理解 IL 有助于理解代码
-
-## Troubleshooting / 故障排除
-
-### "ilasm.exe not found" / 找不到 ilasm.exe
-
-Ensure .NET Framework SDK is installed and the path is correct.
-
-确保安装了 .NET Framework SDK 并且路径正确。
-
-```xml
-<PropertyGroup>
-  <IlasmPath>C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe</IlasmPath>
-</PropertyGroup>
+# 运行测试 / Run tests
+DirectUnsafeTest.exe
 ```
 
-### Build fails with IL errors / IL 构建错误
+### 使用示例 / Usage Example
 
-Check that:
-- IL syntax is correct / IL 语法正确
-- Generic parameters are properly defined / 泛型参数正确定义
-- External assembly references are correct / 外部程序集引用正确
+```bash
+# 编译示例程序 / Compile example program
+csc.exe /unsafe+ /reference:RS.System.Runtime.CompilerServices.Unsafe.dll /out:UnsafeExample.exe UnsafeExample.cs
 
-## License / 许可证
+# 运行示例 / Run examples
+UnsafeExample.exe
+```
+
+## 性能说明 / Performance Notes
+
+- 所有方法都使用原生 IL 指令（sizeof, cpblk, initblk, ldobj, stobj）
+- 无托管调用开销
+- 适用于高性能场景（如游戏引擎、实时系统等）
+
+All methods use native IL instructions (sizeof, cpblk, initblk, ldobj, stobj).
+No managed call overhead.
+Suitable for high-performance scenarios (game engines, real-time systems, etc.).
+
+## 限制 / Limitations
+
+- 需要 .NET Framework 2.0 或更高版本
+- 需要启用 unsafe 代码编译选项
+- 某些方法返回 void* 而不是 ref T（.NET 2.0 限制）
+
+Requires .NET Framework 2.0 or higher.
+Requires unsafe code compilation option.
+Some methods return void* instead of ref T (.NET 2.0 limitation).
+
+## 文件说明 / File Description
+
+| 文件 / File | 描述 / Description |
+|-----------|-------------------|
+| `System.Runtime.CompilerServices.Unsafe.il` | Unsafe 类的 IL 源代码 / IL source code |
+| `RS.System.Runtime.CompilerServices.Unsafe.dll` | 编译后的程序集 / Compiled assembly |
+| `DirectUnsafeTest.cs` | 测试程序 / Test program |
+| `UnsafeExample.cs` | 使用示例 / Usage examples |
+
+## 许可证 / License
 
 MIT License
-
-## Notes / 说明
-
-This implementation uses IL to provide the same API surface as `System.Runtime.CompilerServices.Unsafe` in .NET 4.0+. The IL code is optimized and uses native IL instructions for maximum performance.
-
-此实现使用 IL 提供与 .NET 4.0+ 中 `System.Runtime.CompilerServices.Unsafe` 相同的 API 表面。IL 代码经过优化，使用原生 IL 指令以获得最大性能。
-
-## Related Projects / 相关项目
-
-- [RS.System.Runtime.CompilerServices.Unsafe](../RS.System.Runtime.CompilerServices.Unsafe/) - .NET 4.0+ IL implementation
-- [PowerThreadPool_Net20](../PowerThreadPool_Net20/) - Thread pool library using this implementation
